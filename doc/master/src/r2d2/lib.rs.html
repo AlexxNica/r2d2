@@ -352,6 +352,41 @@
 <span id="310">310</span>
 <span id="311">311</span>
 <span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! A library providing a generic connection pool.</span>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>warn</span>(<span class='ident'>missing_docs</span>)]</span>
@@ -566,11 +601,7 @@
         })
     }
 
-    <span class='doccomment'>/// Retrieves a connection from the pool.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Waits for at most `Config::connection_timeout` before returning an</span>
-    <span class='doccomment'>/// error.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>PooledConnection</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>M</span><span class='op'>&gt;</span>, <span class='ident'>GetTimeout</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>get_inner</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>M</span>::<span class='ident'>Connection</span>, <span class='ident'>GetTimeout</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>end</span> <span class='op'>=</span> <span class='ident'>SteadyTime</span>::<span class='ident'>now</span>() <span class='op'>+</span> <span class='self'>self</span>.<span class='ident'>shared</span>.<span class='ident'>config</span>.<span class='ident'>connection_timeout</span>();
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>internals</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>shared</span>.<span class='ident'>internals</span>.<span class='ident'>lock</span>().<span class='ident'>unwrap</span>();
 
@@ -588,10 +619,7 @@
                         }
                     }
 
-                    <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(<span class='ident'>PooledConnection</span> {
-                        <span class='ident'>pool</span>: <span class='self'>self</span>,
-                        <span class='ident'>conn</span>: <span class='prelude-val'>Some</span>(<span class='ident'>conn</span>),
-                    })
+                    <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(<span class='ident'>conn</span>);
                 }
                 <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> {
                     <span class='kw'>let</span> <span class='ident'>now</span> <span class='op'>=</span> <span class='ident'>SteadyTime</span>::<span class='ident'>now</span>();
@@ -609,6 +637,32 @@
                 }
             }
         }
+    }
+
+    <span class='doccomment'>/// Retrieves a connection from the pool.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Waits for at most `Config::connection_timeout` before returning an</span>
+    <span class='doccomment'>/// error.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>PooledConnection</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>M</span><span class='op'>&gt;</span>, <span class='ident'>GetTimeout</span><span class='op'>&gt;</span> {
+        <span class='prelude-val'>Ok</span>(<span class='ident'>PooledConnection</span> {
+            <span class='ident'>pool</span>: <span class='ident'>MaybeArcPool</span>::<span class='ident'>Ref</span>(<span class='self'>self</span>),
+            <span class='ident'>conn</span>: <span class='prelude-val'>Some</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>get_inner</span>())),
+        })
+    }
+
+    <span class='doccomment'>/// Retrieves a connection from a reference counted pool.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Unlike `Pool::get`, the resulting `PooledConnection` is not bound by</span>
+    <span class='doccomment'>/// any lifetime, as it will store the `Arc` internally.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// # Note</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// This is a static function rather than a method for technical reasons.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_arc</span>(<span class='ident'>pool</span>: <span class='ident'>Arc</span><span class='op'>&lt;</span><span class='kw'>Self</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>PooledConnection</span><span class='op'>&lt;</span><span class='lifetime'>&#39;static</span>, <span class='ident'>M</span><span class='op'>&gt;</span>, <span class='ident'>GetTimeout</span><span class='op'>&gt;</span> {
+        <span class='prelude-val'>Ok</span>(<span class='ident'>PooledConnection</span> {
+            <span class='ident'>conn</span>: <span class='prelude-val'>Some</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>pool</span>.<span class='ident'>get_inner</span>())),
+            <span class='ident'>pool</span>: <span class='ident'>MaybeArcPool</span>::<span class='ident'>Arc</span>(<span class='ident'>pool</span>),
+        })
     }
 
     <span class='kw'>fn</span> <span class='ident'>handle_broken</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>internals</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>MutexGuard</span><span class='op'>&lt;</span><span class='ident'>PoolInternals</span><span class='op'>&lt;</span><span class='ident'>M</span>::<span class='ident'>Connection</span><span class='op'>&gt;&gt;</span>) {
@@ -630,9 +684,25 @@
     }
 }
 
+<span class='kw'>enum</span> <span class='ident'>MaybeArcPool</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>M</span><span class='op'>&gt;</span> <span class='kw'>where</span> <span class='ident'>M</span>: <span class='ident'>ConnectionManager</span> {
+    <span class='ident'>Ref</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>Pool</span><span class='op'>&lt;</span><span class='ident'>M</span><span class='op'>&gt;</span>),
+    <span class='ident'>Arc</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Pool</span><span class='op'>&lt;</span><span class='ident'>M</span><span class='op'>&gt;&gt;</span>),
+}
+
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>M</span><span class='op'>&gt;</span> <span class='ident'>Deref</span> <span class='kw'>for</span> <span class='ident'>MaybeArcPool</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>M</span><span class='op'>&gt;</span> <span class='kw'>where</span> <span class='ident'>M</span>: <span class='ident'>ConnectionManager</span> {
+    <span class='kw'>type</span> <span class='ident'>Target</span> <span class='op'>=</span> <span class='ident'>Pool</span><span class='op'>&lt;</span><span class='ident'>M</span><span class='op'>&gt;</span>;
+
+    <span class='kw'>fn</span> <span class='ident'>deref</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>Pool</span><span class='op'>&lt;</span><span class='ident'>M</span><span class='op'>&gt;</span> {
+        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='ident'>MaybeArcPool</span>::<span class='ident'>Ref</span>(<span class='ident'>p</span>) <span class='op'>=&gt;</span> <span class='ident'>p</span>,
+            <span class='ident'>MaybeArcPool</span>::<span class='ident'>Arc</span>(<span class='kw-2'>ref</span> <span class='ident'>p</span>) <span class='op'>=&gt;</span> <span class='kw-2'>&amp;</span><span class='op'>*</span><span class='op'>*</span><span class='ident'>p</span>,
+        }
+    }
+}
+
 <span class='doccomment'>/// A smart pointer wrapping a connection.</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>PooledConnection</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>M</span><span class='op'>&gt;</span> <span class='kw'>where</span> <span class='ident'>M</span>: <span class='ident'>ConnectionManager</span> {
-    <span class='ident'>pool</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>Pool</span><span class='op'>&lt;</span><span class='ident'>M</span><span class='op'>&gt;</span>,
+    <span class='ident'>pool</span>: <span class='ident'>MaybeArcPool</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>M</span><span class='op'>&gt;</span>,
     <span class='ident'>conn</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>M</span>::<span class='ident'>Connection</span><span class='op'>&gt;</span>,
 }
 
@@ -640,7 +710,7 @@
         <span class='kw'>where</span> <span class='ident'>M</span>: <span class='ident'>ConnectionManager</span> <span class='op'>+</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span>, <span class='ident'>M</span>::<span class='ident'>Connection</span>: <span class='ident'>fmt</span>::<span class='ident'>Debug</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>fmt</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>fmt</span>::<span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
         <span class='ident'>DebugStruct</span>::<span class='ident'>new</span>(<span class='ident'>fmt</span>, <span class='string'>&quot;PooledConnection&quot;</span>)
-            .<span class='ident'>field</span>(<span class='string'>&quot;pool&quot;</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>pool</span>)
+            .<span class='ident'>field</span>(<span class='string'>&quot;pool&quot;</span>, <span class='kw-2'>&amp;</span><span class='op'>*</span><span class='self'>self</span>.<span class='ident'>pool</span>)
             .<span class='ident'>field</span>(<span class='string'>&quot;connection&quot;</span>, <span class='self'>self</span>.<span class='ident'>conn</span>.<span class='ident'>as_ref</span>().<span class='ident'>unwrap</span>())
             .<span class='ident'>finish</span>()
     }

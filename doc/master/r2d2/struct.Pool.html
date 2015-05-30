@@ -58,6 +58,15 @@ connections.</p>
 
 <p>Waits for at most <code>Config::connection_timeout</code> before returning an
 error.</p>
+</div><h4 id='method.get_arc' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.get_arc' class='fnname'>get_arc</a>(pool: <a class='struct' href='http://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;Self&gt;) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='../r2d2/struct.PooledConnection.html' title='r2d2::PooledConnection'>PooledConnection</a>&lt;'static, M&gt;, <a class='struct' href='../r2d2/struct.GetTimeout.html' title='r2d2::GetTimeout'>GetTimeout</a>&gt;</code></h4>
+<div class='docblock'><p>Retrieves a connection from a reference counted pool.</p>
+
+<p>Unlike <code>Pool::get</code>, the resulting <code>PooledConnection</code> is not bound by
+any lifetime, as it will store the <code>Arc</code> internally.</p>
+
+<h1 id="note" class='section-header'><a
+                           href="#note">Note</a></h1>
+<p>This is a static function rather than a method for technical reasons.</p>
 </div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;M&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/ops/trait.Drop.html' title='core::ops::Drop'>Drop</a> for <a class='struct' href='../r2d2/struct.Pool.html' title='r2d2::Pool'>Pool</a>&lt;M&gt; <span class='where'>where M: <a class='trait' href='../r2d2/trait.ConnectionManager.html' title='r2d2::ConnectionManager'>ConnectionManager</a></span></code></h3><div class='impl-items'><h4 id='method.drop' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#method.drop' class='fnname'>drop</a>(&amp;mut self)</code></h4>
 </div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;M&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../r2d2/struct.Pool.html' title='r2d2::Pool'>Pool</a>&lt;M&gt; <span class='where'>where M: <a class='trait' href='../r2d2/trait.ConnectionManager.html' title='r2d2::ConnectionManager'>ConnectionManager</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a></span></code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, fmt: &amp;mut <a class='struct' href='http://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
 </div></section>
