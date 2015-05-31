@@ -383,10 +383,6 @@
 <span id="341">341</span>
 <span id="342">342</span>
 <span id="343">343</span>
-<span id="344">344</span>
-<span id="345">345</span>
-<span id="346">346</span>
-<span id="347">347</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! A library providing a generic connection pool.</span>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>warn</span>(<span class='ident'>missing_docs</span>)]</span>
@@ -654,10 +650,6 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Unlike `Pool::get`, the resulting `PooledConnection` is not bound by</span>
     <span class='doccomment'>/// any lifetime, as it will store the `Arc` internally.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// # Note</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// This is a static function rather than a method for technical reasons.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_arc</span>(<span class='ident'>pool</span>: <span class='ident'>Arc</span><span class='op'>&lt;</span><span class='kw'>Self</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>PooledConnection</span><span class='op'>&lt;</span><span class='lifetime'>&#39;static</span>, <span class='ident'>M</span><span class='op'>&gt;</span>, <span class='ident'>GetTimeout</span><span class='op'>&gt;</span> {
         <span class='prelude-val'>Ok</span>(<span class='ident'>PooledConnection</span> {
             <span class='ident'>conn</span>: <span class='prelude-val'>Some</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>pool</span>.<span class='ident'>get_inner</span>())),
