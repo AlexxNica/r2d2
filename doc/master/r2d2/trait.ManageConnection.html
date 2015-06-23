@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `ConnectionManager` trait in crate `r2d2`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, ConnectionManager">
+    <meta name="description" content="API documentation for the Rust `ManageConnection` trait in crate `r2d2`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ManageConnection">
 
-    <title>r2d2::ConnectionManager - Rust</title>
+    <title>r2d2::ManageConnection - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../main.css">
 
@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='index.html'>r2d2</a></p><script>window.sidebarCurrent = {name: 'ConnectionManager', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='index.html'>r2d2</a></p><script>window.sidebarCurrent = {name: 'ManageConnection', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </section>
 
     <nav class="sub">
@@ -41,16 +41,16 @@
     </nav>
 
     <section id='main' class="content trait">
-<h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>r2d2</a>::<wbr><a class='trait' href=''>ConnectionManager</a><wbr></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>r2d2</a>::<wbr><a class='trait' href=''>ManageConnection</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]</a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-1242' href='../src/r2d2/lib.rs.html#28-54'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait ConnectionManager: <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Sync.html' title='core::marker::Sync'>Sync</a> + 'static {
+        </span><a id='src-1292' href='../src/r2d2/lib.rs.html#28-54'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait ManageConnection: <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Sync.html' title='core::marker::Sync'>Sync</a> + 'static {
     type Connection: <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + 'static;
     type Error: 'static;
 
-    fn <a href='#tymethod.connect' class='fnname'>connect</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;Self::<a class='trait' href='../r2d2/trait.ConnectionManager.html' title='r2d2::ConnectionManager'>Connection</a>, Self::<a class='trait' href='../r2d2/trait.ConnectionManager.html' title='r2d2::ConnectionManager'>Error</a>&gt;;
-    fn <a href='#tymethod.is_valid' class='fnname'>is_valid</a>(&amp;self, conn: &amp;mut Self::<a class='trait' href='../r2d2/trait.ConnectionManager.html' title='r2d2::ConnectionManager'>Connection</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, Self::<a class='trait' href='../r2d2/trait.ConnectionManager.html' title='r2d2::ConnectionManager'>Error</a>&gt;;
-    fn <a href='#tymethod.has_broken' class='fnname'>has_broken</a>(&amp;self, conn: &amp;mut Self::<a class='trait' href='../r2d2/trait.ConnectionManager.html' title='r2d2::ConnectionManager'>Connection</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>;
+    fn <a href='#tymethod.connect' class='fnname'>connect</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;Self::<a class='trait' href='../r2d2/trait.ManageConnection.html' title='r2d2::ManageConnection'>Connection</a>, Self::<a class='trait' href='../r2d2/trait.ManageConnection.html' title='r2d2::ManageConnection'>Error</a>&gt;;
+    fn <a href='#tymethod.is_valid' class='fnname'>is_valid</a>(&amp;self, conn: &amp;mut Self::<a class='trait' href='../r2d2/trait.ManageConnection.html' title='r2d2::ManageConnection'>Connection</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, Self::<a class='trait' href='../r2d2/trait.ManageConnection.html' title='r2d2::ManageConnection'>Error</a>&gt;;
+    fn <a href='#tymethod.has_broken' class='fnname'>has_broken</a>(&amp;self, conn: &amp;mut Self::<a class='trait' href='../r2d2/trait.ManageConnection.html' title='r2d2::ManageConnection'>Connection</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>;
 }</pre><div class='docblock'><p>A trait which provides connection-specific functionality.</p>
 </div>
             <h2 id='associated-types'>Associated Types</h2>
@@ -60,12 +60,12 @@
 </div></div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.connect' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.connect' class='fnname'>connect</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;Self::<a class='trait' href='../r2d2/trait.ConnectionManager.html' title='r2d2::ConnectionManager'>Connection</a>, Self::<a class='trait' href='../r2d2/trait.ConnectionManager.html' title='r2d2::ConnectionManager'>Error</a>&gt;</code></h3><div class='docblock'><p>Attempts to create a new connection.</p>
-</div><h3 id='tymethod.is_valid' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.is_valid' class='fnname'>is_valid</a>(&amp;self, conn: &amp;mut Self::<a class='trait' href='../r2d2/trait.ConnectionManager.html' title='r2d2::ConnectionManager'>Connection</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, Self::<a class='trait' href='../r2d2/trait.ConnectionManager.html' title='r2d2::ConnectionManager'>Error</a>&gt;</code></h3><div class='docblock'><p>Determines if the connection is still connected to the database.</p>
+        <h3 id='tymethod.connect' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.connect' class='fnname'>connect</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;Self::<a class='trait' href='../r2d2/trait.ManageConnection.html' title='r2d2::ManageConnection'>Connection</a>, Self::<a class='trait' href='../r2d2/trait.ManageConnection.html' title='r2d2::ManageConnection'>Error</a>&gt;</code></h3><div class='docblock'><p>Attempts to create a new connection.</p>
+</div><h3 id='tymethod.is_valid' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.is_valid' class='fnname'>is_valid</a>(&amp;self, conn: &amp;mut Self::<a class='trait' href='../r2d2/trait.ManageConnection.html' title='r2d2::ManageConnection'>Connection</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, Self::<a class='trait' href='../r2d2/trait.ManageConnection.html' title='r2d2::ManageConnection'>Error</a>&gt;</code></h3><div class='docblock'><p>Determines if the connection is still connected to the database.</p>
 
 <p>A standard implementation would check if a simple query like <code>SELECT 1</code>
 succeeds.</p>
-</div><h3 id='tymethod.has_broken' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.has_broken' class='fnname'>has_broken</a>(&amp;self, conn: &amp;mut Self::<a class='trait' href='../r2d2/trait.ConnectionManager.html' title='r2d2::ConnectionManager'>Connection</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h3><div class='docblock'><p><em>Quickly</em> determines if the connection is no longer usable.</p>
+</div><h3 id='tymethod.has_broken' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.has_broken' class='fnname'>has_broken</a>(&amp;self, conn: &amp;mut Self::<a class='trait' href='../r2d2/trait.ManageConnection.html' title='r2d2::ManageConnection'>Connection</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h3><div class='docblock'><p><em>Quickly</em> determines if the connection is no longer usable.</p>
 
 <p>This will be called synchronously every time a connection is returned
 to the pool, so it should <em>not</em> block. If it returns <code>true</code>, the
@@ -78,7 +78,7 @@ fast health check may simply return <code>false</code>.</p>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
     </ul><script type="text/javascript" async
-                              src="../implementors/r2d2/trait.ConnectionManager.js">
+                              src="../implementors/r2d2/trait.ManageConnection.js">
                       </script></section>
     <section id='search' class="content hidden"></section>
 

@@ -201,28 +201,80 @@
 <span id="159">159</span>
 <span id="160">160</span>
 <span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Pool configuration.</span>
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>default</span>::<span class='ident'>Default</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
 <span class='kw'>use</span> <span class='ident'>time</span>::<span class='ident'>Duration</span>;
+<span class='kw'>use</span> <span class='ident'>debug_builders</span>::<span class='ident'>DebugStruct</span>;
+
+<span class='kw'>use</span> {<span class='ident'>HandleError</span>, <span class='ident'>NoopErrorHandler</span>, <span class='ident'>CustomizeConnection</span>, <span class='ident'>NoopConnectionCustomizer</span>};
 
 <span class='doccomment'>/// A builder for `Config`.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// See the documentation of `Config` for more details about the default value</span>
 <span class='doccomment'>/// and meaning of the configuration parameters.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Builder</span> {
-    <span class='ident'>c</span>: <span class='ident'>Config</span>,
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
+    <span class='ident'>c</span>: <span class='ident'>Config</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>Builder</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Constructs a new `Builder`.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Parameters are initialized with their default values.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>Builder</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='ident'>Builder</span> {
-            <span class='ident'>c</span>: <span class='ident'>Default</span>::<span class='ident'>default</span>(),
+            <span class='ident'>c</span>: <span class='ident'>Config</span>::<span class='ident'>default</span>(),
         }
     }
 
@@ -232,7 +284,7 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Panics if `pool_size` is 0.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>pool_size</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>pool_size</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>pool_size</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>pool_size</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>pool_size</span> <span class='op'>&gt;</span> <span class='number'>0</span>, <span class='string'>&quot;pool_size must be positive&quot;</span>);
         <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>pool_size</span> <span class='op'>=</span> <span class='ident'>pool_size</span>;
         <span class='self'>self</span>
@@ -244,7 +296,7 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Panics if `helper_threads` is 0.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>helper_threads</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>helper_threads</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>helper_threads</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>helper_threads</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>helper_threads</span> <span class='op'>&gt;</span> <span class='number'>0</span>, <span class='string'>&quot;helper_threads must be positive&quot;</span>);
         <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>helper_threads</span> <span class='op'>=</span> <span class='ident'>helper_threads</span>;
         <span class='self'>self</span>
@@ -252,14 +304,14 @@
 
     <span class='doccomment'>/// Sets `test_on_check_out`.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>test_on_check_out</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>test_on_check_out</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>test_on_check_out</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>test_on_check_out</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>test_on_check_out</span> <span class='op'>=</span> <span class='ident'>test_on_check_out</span>;
         <span class='self'>self</span>
     }
 
     <span class='doccomment'>/// Sets `initialization_fail_fast`.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>initialization_fail_fast</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>initialization_fail_fast</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>initialization_fail_fast</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>initialization_fail_fast</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>initialization_fail_fast</span> <span class='op'>=</span> <span class='ident'>initialization_fail_fast</span>;
         <span class='self'>self</span>
     }
@@ -270,15 +322,30 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Panics if `connection_timeout` is nonpositive.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_timeout</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>connection_timeout</span>: <span class='ident'>Duration</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_timeout</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>connection_timeout</span>: <span class='ident'>Duration</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>connection_timeout</span> <span class='op'>&gt;</span> <span class='ident'>Duration</span>::<span class='ident'>zero</span>(), <span class='string'>&quot;connection_timeout must be positive&quot;</span>);
         <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>connection_timeout</span> <span class='op'>=</span> <span class='ident'>connection_timeout</span>;
         <span class='self'>self</span>
     }
 
+    <span class='doccomment'>/// Sets the `error_handler`.</span>
+    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>error_handler</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>error_handler</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>HandleError</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
+        <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>error_handler</span> <span class='op'>=</span> <span class='ident'>error_handler</span>;
+        <span class='self'>self</span>
+    }
+
+    <span class='doccomment'>/// Sets the `connection_customizer`.</span>
+    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_customizer</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>connection_customizer</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>CustomizeConnection</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;&gt;</span>)
+                                 <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
+        <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>connection_customizer</span> <span class='op'>=</span> <span class='ident'>connection_customizer</span>;
+        <span class='self'>self</span>
+    }
+
     <span class='doccomment'>/// Consumes the `Builder`, turning it into a `Config`.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>build</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Config</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>build</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Config</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>c</span>
     }
 }
@@ -287,35 +354,50 @@
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// `Config` implements `Default`, which provides a set of reasonable default</span>
 <span class='doccomment'>/// values. It can be constructed using a `Builder`.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Config</span> {
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Config</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
     <span class='ident'>pool_size</span>: <span class='ident'>u32</span>,
     <span class='ident'>helper_threads</span>: <span class='ident'>u32</span>,
     <span class='ident'>test_on_check_out</span>: <span class='ident'>bool</span>,
     <span class='ident'>initialization_fail_fast</span>: <span class='ident'>bool</span>,
     <span class='ident'>connection_timeout</span>: <span class='ident'>Duration</span>,
+    <span class='ident'>error_handler</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>HandleError</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;&gt;</span>,
+    <span class='ident'>connection_customizer</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>CustomizeConnection</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;&gt;</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>Default</span> <span class='kw'>for</span> <span class='ident'>Config</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>Config</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>fmt</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>fmt</span>::<span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
+        <span class='ident'>DebugStruct</span>::<span class='ident'>new</span>(<span class='ident'>fmt</span>, <span class='string'>&quot;Config&quot;</span>)
+            .<span class='ident'>field</span>(<span class='string'>&quot;pool_size&quot;</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>pool_size</span>)
+            .<span class='ident'>field</span>(<span class='string'>&quot;helper_threads&quot;</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>helper_threads</span>)
+            .<span class='ident'>field</span>(<span class='string'>&quot;test_on_check_out&quot;</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>test_on_check_out</span>)
+            .<span class='ident'>field</span>(<span class='string'>&quot;initialization_fail_fast&quot;</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>initialization_fail_fast</span>)
+            .<span class='ident'>field</span>(<span class='string'>&quot;connection_timeout&quot;</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>connection_timeout</span>)
+            .<span class='ident'>finish</span>()
+    }
+}
+
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> <span class='ident'>Default</span> <span class='kw'>for</span> <span class='ident'>Config</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>default</span>() <span class='op'>-&gt;</span> <span class='ident'>Config</span> {
+    <span class='kw'>fn</span> <span class='ident'>default</span>() <span class='op'>-&gt;</span> <span class='ident'>Config</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='ident'>Config</span> {
             <span class='ident'>pool_size</span>: <span class='number'>10</span>,
             <span class='ident'>helper_threads</span>: <span class='number'>3</span>,
             <span class='ident'>test_on_check_out</span>: <span class='boolval'>true</span>,
             <span class='ident'>initialization_fail_fast</span>: <span class='boolval'>true</span>,
             <span class='ident'>connection_timeout</span>: <span class='ident'>Duration</span>::<span class='ident'>seconds</span>(<span class='number'>30</span>),
+            <span class='ident'>error_handler</span>: <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>NoopErrorHandler</span>),
+            <span class='ident'>connection_customizer</span>: <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>NoopConnectionCustomizer</span>),
         }
     }
 }
 
-<span class='kw'>impl</span> <span class='ident'>Config</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> <span class='ident'>Config</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Creates a new `Builder` which can be used to construct a customized</span>
     <span class='doccomment'>/// `Config`.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// All parameters are initialized to their default values.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>builder</span>() <span class='op'>-&gt;</span> <span class='ident'>Builder</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>builder</span>() <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='ident'>Builder</span>::<span class='ident'>new</span>()
     }
 
@@ -361,6 +443,22 @@
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_timeout</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Duration</span> {
         <span class='self'>self</span>.<span class='ident'>connection_timeout</span>
+    }
+
+    <span class='doccomment'>/// The handler for error reported in the pool.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Defaults to `r2d2::NoopErrorHandler`.</span>
+    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>error_handler</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>HandleError</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span> {
+        <span class='kw-2'>&amp;</span><span class='op'>*</span><span class='self'>self</span>.<span class='ident'>error_handler</span>
+    }
+
+    <span class='doccomment'>/// The connection customizer used by the pool.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Defaults to `r2d2::NoopConnectionCustomizer`.</span>
+    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_customizer</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>CustomizeConnection</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
+        <span class='kw-2'>&amp;</span><span class='op'>*</span><span class='self'>self</span>.<span class='ident'>connection_customizer</span>
     }
 }
 </pre>

@@ -43,7 +43,7 @@
     <section id='main' class="content mod">
 <h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>r2d2</a><wbr></span><span class='out-of-band'><a href='stability.html'>[stability]</a> <span id='render-detail'>
             <a id="collapse-all" href="#">[-]</a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-0' href='../src/r2d2/lib.rs.html#1-343'>[src]</a></span></h1>
+        </span><a id='src-0' href='../src/r2d2/lib.rs.html#1-346'>[src]</a></span></h1>
 <div class='docblock'><p>A library providing a generic connection pool.</p>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
@@ -79,14 +79,21 @@
                     <tr>
                         <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.LoggingErrorHandler.html'
                                title='r2d2::LoggingErrorHandler'>LoggingErrorHandler</a></td>
-                        <td class='docblock short'><p>An <code>ErrorHandler</code> which logs at the error level.</p>
+                        <td class='docblock short'><p>A <code>HandleError</code> implementation which logs at the error level.</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.NoopConnectionCustomizer.html'
+                               title='r2d2::NoopConnectionCustomizer'>NoopConnectionCustomizer</a></td>
+                        <td class='docblock short'><p>A <code>CustomizeConnection</code> which does nothing.</p>
 </td>
                     </tr>
                 
                     <tr>
                         <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.NoopErrorHandler.html'
                                title='r2d2::NoopErrorHandler'>NoopErrorHandler</a></td>
-                        <td class='docblock short'><p>An <code>ErrorHandler</code> which does nothing.</p>
+                        <td class='docblock short'><p>A <code>HandleError</code> implementation which does nothing.</p>
 </td>
                     </tr>
                 
@@ -106,16 +113,23 @@
                 </table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
                     <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.ConnectionManager.html'
-                               title='r2d2::ConnectionManager'>ConnectionManager</a></td>
-                        <td class='docblock short'><p>A trait which provides connection-specific functionality.</p>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.CustomizeConnection.html'
+                               title='r2d2::CustomizeConnection'>CustomizeConnection</a></td>
+                        <td class='docblock short'><p>A trait which allows for customization of connections.</p>
 </td>
                     </tr>
                 
                     <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.ErrorHandler.html'
-                               title='r2d2::ErrorHandler'>ErrorHandler</a></td>
-                        <td class='docblock short'><p>A trait which handles errors reported by the <code>ConnectionManager</code>.</p>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.HandleError.html'
+                               title='r2d2::HandleError'>HandleError</a></td>
+                        <td class='docblock short'><p>A trait which handles errors reported by the <code>ManageConnection</code>.</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.ManageConnection.html'
+                               title='r2d2::ManageConnection'>ManageConnection</a></td>
+                        <td class='docblock short'><p>A trait which provides connection-specific functionality.</p>
 </td>
                     </tr>
                 </table></section>

@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `ErrorHandler` trait in crate `r2d2`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, ErrorHandler">
+    <meta name="description" content="API documentation for the Rust `HandleError` trait in crate `r2d2`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, HandleError">
 
-    <title>r2d2::ErrorHandler - Rust</title>
+    <title>r2d2::HandleError - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../main.css">
 
@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='index.html'>r2d2</a></p><script>window.sidebarCurrent = {name: 'ErrorHandler', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='index.html'>r2d2</a></p><script>window.sidebarCurrent = {name: 'HandleError', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </section>
 
     <nav class="sub">
@@ -41,12 +41,12 @@
     </nav>
 
     <section id='main' class="content trait">
-<h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>r2d2</a>::<wbr><a class='trait' href=''>ErrorHandler</a><wbr></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>r2d2</a>::<wbr><a class='trait' href=''>HandleError</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]</a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-1282' href='../src/r2d2/lib.rs.html#57-60'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait ErrorHandler&lt;E&gt;: <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Sync.html' title='core::marker::Sync'>Sync</a> + 'static {
+        </span><a id='src-1332' href='../src/r2d2/lib.rs.html#57-60'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait HandleError&lt;E&gt;: <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Sync.html' title='core::marker::Sync'>Sync</a> + 'static {
     fn <a href='#tymethod.handle_error' class='fnname'>handle_error</a>(&amp;self, error: E);
-}</pre><div class='docblock'><p>A trait which handles errors reported by the <code>ConnectionManager</code>.</p>
+}</pre><div class='docblock'><p>A trait which handles errors reported by the <code>ManageConnection</code>.</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
@@ -54,10 +54,10 @@
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;E&gt; <a class='trait' href='../r2d2/trait.ErrorHandler.html' title='r2d2::ErrorHandler'>ErrorHandler</a>&lt;E&gt; for <a class='struct' href='../r2d2/struct.NoopErrorHandler.html' title='r2d2::NoopErrorHandler'>NoopErrorHandler</a></code></li>
-<li><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;E&gt; <a class='trait' href='../r2d2/trait.ErrorHandler.html' title='r2d2::ErrorHandler'>ErrorHandler</a>&lt;E&gt; for <a class='struct' href='../r2d2/struct.LoggingErrorHandler.html' title='r2d2::LoggingErrorHandler'>LoggingErrorHandler</a> <span class='where'>where E: <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a></span></code></li>
+    <li><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;E&gt; <a class='trait' href='../r2d2/trait.HandleError.html' title='r2d2::HandleError'>HandleError</a>&lt;E&gt; for <a class='struct' href='../r2d2/struct.NoopErrorHandler.html' title='r2d2::NoopErrorHandler'>NoopErrorHandler</a></code></li>
+<li><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;E&gt; <a class='trait' href='../r2d2/trait.HandleError.html' title='r2d2::HandleError'>HandleError</a>&lt;E&gt; for <a class='struct' href='../r2d2/struct.LoggingErrorHandler.html' title='r2d2::LoggingErrorHandler'>LoggingErrorHandler</a> <span class='where'>where E: <a class='trait' href='http://doc.rust-lang.org/nightly/std/error/trait.Error.html' title='std::error::Error'>Error</a></span></code></li>
 </ul><script type="text/javascript" async
-                              src="../implementors/r2d2/trait.ErrorHandler.js">
+                              src="../implementors/r2d2/trait.HandleError.js">
                       </script></section>
     <section id='search' class="content hidden"></section>
 
