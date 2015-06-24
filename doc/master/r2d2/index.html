@@ -43,8 +43,45 @@
     <section id='main' class="content mod">
 <h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>r2d2</a><wbr></span><span class='out-of-band'><a href='stability.html'>[stability]</a> <span id='render-detail'>
             <a id="collapse-all" href="#">[-]</a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-0' href='../src/r2d2/lib.rs.html#1-348'>[src]</a></span></h1>
-<div class='docblock'><p>A library providing a generic connection pool.</p>
+        </span><a id='src-0' href='../src/r2d2/lib.rs.html#1-386'>[src]</a></span></h1>
+<div class='docblock'><p>A generic connection pool.</p>
+
+<p>Opening a new database connection every time one is needed is both
+inefficient and can lead to resource exhaustion under high traffic
+conditions. A connection pool maintains a set of open connections to a
+database, handing them out for repeated use.</p>
+
+<p>r2d2 is agnostic to the connection type it is managing. Implementors of the
+<code>ManageConnection</code> trait provide the database-specific logic to create and
+check the health of connections.</p>
+
+<h1 id="example" class='section-header'><a
+                           href="#example">Example</a></h1>
+<p>Using an imaginary &quot;foodb&quot; database.</p>
+<pre id='rust-example-rendered' class='rust '>
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>thread</span>;
+
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>r2d2</span>;
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>r2d2_foodb</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>config</span> <span class='op'>=</span> <span class='ident'>r2d2</span>::<span class='ident'>Config</span>::<span class='ident'>builder</span>()
+        .<span class='ident'>error_handler</span>(<span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>r2d2</span>::<span class='ident'>LoggingErrorHandler</span>))
+        .<span class='ident'>build</span>();
+    <span class='kw'>let</span> <span class='ident'>manager</span> <span class='op'>=</span> <span class='ident'>r2d2_foodb</span>::<span class='ident'>FooManageConnection</span>::<span class='ident'>new</span>(<span class='string'>&quot;localhost:1234&quot;</span>);
+
+    <span class='kw'>let</span> <span class='ident'>pool</span> <span class='op'>=</span> <span class='ident'>r2d2</span>::<span class='ident'>Pool</span>::<span class='ident'>new</span>(<span class='ident'>config</span>, <span class='ident'>manager</span>).<span class='ident'>unwrap</span>();
+
+    <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>20i32</span> {
+        <span class='kw'>let</span> <span class='ident'>pool</span> <span class='op'>=</span> <span class='ident'>pool</span>.<span class='ident'>clone</span>();
+        <span class='ident'>thread</span>::<span class='ident'>spawn</span>(<span class='kw'>move</span> <span class='op'>||</span> {
+            <span class='kw'>let</span> <span class='ident'>conn</span> <span class='op'>=</span> <span class='ident'>pool</span>.<span class='ident'>get</span>().<span class='ident'>unwrap</span>();
+            <span class='comment'>// use the connection</span>
+            <span class='comment'>// it will be returned to the pool when it falls out of scope.</span>
+        })
+    }
+}
+</pre>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                     <tr>
