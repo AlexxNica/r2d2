@@ -386,6 +386,8 @@
 <span id="344">344</span>
 <span id="345">345</span>
 <span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! A library providing a generic connection pool.</span>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>warn</span>(<span class='ident'>missing_docs</span>)]</span>
@@ -611,7 +613,8 @@
         }
 
         <span class='kw'>if</span> <span class='ident'>shared</span>.<span class='ident'>config</span>.<span class='ident'>initialization_fail_fast</span>() {
-            <span class='kw'>let</span> <span class='ident'>end</span> <span class='op'>=</span> <span class='ident'>SteadyTime</span>::<span class='ident'>now</span>() <span class='op'>+</span> <span class='ident'>shared</span>.<span class='ident'>config</span>.<span class='ident'>connection_timeout</span>();
+            <span class='kw'>let</span> <span class='ident'>end</span> <span class='op'>=</span> <span class='ident'>SteadyTime</span>::<span class='ident'>now</span>() <span class='op'>+</span>
+                <span class='ident'>Duration</span>::<span class='ident'>milliseconds</span>(<span class='ident'>shared</span>.<span class='ident'>config</span>.<span class='ident'>connection_timeout_ms</span>() <span class='kw'>as</span> <span class='ident'>i64</span>);
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>internals</span> <span class='op'>=</span> <span class='ident'>shared</span>.<span class='ident'>internals</span>.<span class='ident'>lock</span>().<span class='ident'>unwrap</span>();
 
             <span class='kw'>while</span> <span class='ident'>internals</span>.<span class='ident'>num_conns</span> <span class='op'>!=</span> <span class='ident'>shared</span>.<span class='ident'>config</span>.<span class='ident'>pool_size</span>() {
@@ -631,7 +634,8 @@
     }
 
     <span class='kw'>fn</span> <span class='ident'>get_inner</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>M</span>::<span class='ident'>Connection</span>, <span class='ident'>GetTimeout</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>end</span> <span class='op'>=</span> <span class='ident'>SteadyTime</span>::<span class='ident'>now</span>() <span class='op'>+</span> <span class='self'>self</span>.<span class='ident'>shared</span>.<span class='ident'>config</span>.<span class='ident'>connection_timeout</span>();
+        <span class='kw'>let</span> <span class='ident'>end</span> <span class='op'>=</span> <span class='ident'>SteadyTime</span>::<span class='ident'>now</span>() <span class='op'>+</span>
+            <span class='ident'>Duration</span>::<span class='ident'>milliseconds</span>(<span class='self'>self</span>.<span class='ident'>shared</span>.<span class='ident'>config</span>.<span class='ident'>connection_timeout_ms</span>() <span class='kw'>as</span> <span class='ident'>i64</span>);
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>internals</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>shared</span>.<span class='ident'>internals</span>.<span class='ident'>lock</span>().<span class='ident'>unwrap</span>();
 
         <span class='kw'>loop</span> {

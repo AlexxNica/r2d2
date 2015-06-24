@@ -249,11 +249,9 @@
 <span id="207">207</span>
 <span id="208">208</span>
 <span id="209">209</span>
-<span id="210">210</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Pool configuration.</span>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
-<span class='kw'>use</span> <span class='ident'>time</span>::<span class='ident'>Duration</span>;
 <span class='kw'>use</span> <span class='ident'>debug_builders</span>::<span class='ident'>DebugStruct</span>;
 
 <span class='kw'>use</span> {<span class='ident'>HandleError</span>, <span class='ident'>NoopErrorHandler</span>, <span class='ident'>CustomizeConnection</span>, <span class='ident'>NoopConnectionCustomizer</span>};
@@ -316,15 +314,15 @@
         <span class='self'>self</span>
     }
 
-    <span class='doccomment'>/// Sets `connection_timeout`.</span>
+    <span class='doccomment'>/// Sets `connection_timeout` to the specified number of milliseconds.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// # Panics</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Panics if `connection_timeout` is nonpositive.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_timeout</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>connection_timeout</span>: <span class='ident'>Duration</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>connection_timeout</span> <span class='op'>&gt;</span> <span class='ident'>Duration</span>::<span class='ident'>zero</span>(), <span class='string'>&quot;connection_timeout must be positive&quot;</span>);
-        <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>connection_timeout</span> <span class='op'>=</span> <span class='ident'>connection_timeout</span>;
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_timeout_ms</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>connection_timeout_ms</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>connection_timeout_ms</span> <span class='op'>&gt;</span> <span class='number'>0</span>, <span class='string'>&quot;connection_timeout_ms must be positive&quot;</span>);
+        <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>connection_timeout_ms</span> <span class='op'>=</span> <span class='ident'>connection_timeout_ms</span>;
         <span class='self'>self</span>
     }
 
@@ -359,7 +357,7 @@
     <span class='ident'>helper_threads</span>: <span class='ident'>u32</span>,
     <span class='ident'>test_on_check_out</span>: <span class='ident'>bool</span>,
     <span class='ident'>initialization_fail_fast</span>: <span class='ident'>bool</span>,
-    <span class='ident'>connection_timeout</span>: <span class='ident'>Duration</span>,
+    <span class='ident'>connection_timeout_ms</span>: <span class='ident'>u32</span>,
     <span class='ident'>error_handler</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>HandleError</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;&gt;</span>,
     <span class='ident'>connection_customizer</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>CustomizeConnection</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;&gt;</span>,
 }
@@ -371,7 +369,7 @@
             .<span class='ident'>field</span>(<span class='string'>&quot;helper_threads&quot;</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>helper_threads</span>)
             .<span class='ident'>field</span>(<span class='string'>&quot;test_on_check_out&quot;</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>test_on_check_out</span>)
             .<span class='ident'>field</span>(<span class='string'>&quot;initialization_fail_fast&quot;</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>initialization_fail_fast</span>)
-            .<span class='ident'>field</span>(<span class='string'>&quot;connection_timeout&quot;</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>connection_timeout</span>)
+            .<span class='ident'>field</span>(<span class='string'>&quot;connection_timeout_ms&quot;</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>connection_timeout_ms</span>)
             .<span class='ident'>finish</span>()
     }
 }
@@ -384,7 +382,7 @@
             <span class='ident'>helper_threads</span>: <span class='number'>3</span>,
             <span class='ident'>test_on_check_out</span>: <span class='boolval'>true</span>,
             <span class='ident'>initialization_fail_fast</span>: <span class='boolval'>true</span>,
-            <span class='ident'>connection_timeout</span>: <span class='ident'>Duration</span>::<span class='ident'>seconds</span>(<span class='number'>30</span>),
+            <span class='ident'>connection_timeout_ms</span>: <span class='number'>30</span> <span class='op'>*</span> <span class='number'>1000</span>,
             <span class='ident'>error_handler</span>: <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>NoopErrorHandler</span>),
             <span class='ident'>connection_customizer</span>: <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>NoopConnectionCustomizer</span>),
         }
@@ -436,13 +434,13 @@
         <span class='self'>self</span>.<span class='ident'>initialization_fail_fast</span>
     }
 
-    <span class='doccomment'>/// Calls to `Pool::get` will wait this long for a connection to become</span>
-    <span class='doccomment'>/// available before returning an error.</span>
+    <span class='doccomment'>/// Calls to `Pool::get` will wait for this many milliseconds for a</span>
+    <span class='doccomment'>/// connection to become available before returning an error.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Defaults to 30 seconds.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_timeout</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Duration</span> {
-        <span class='self'>self</span>.<span class='ident'>connection_timeout</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_timeout_ms</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
+        <span class='self'>self</span>.<span class='ident'>connection_timeout_ms</span>
     }
 
     <span class='doccomment'>/// The handler for error reported in the pool.</span>
