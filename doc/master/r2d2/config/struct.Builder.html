@@ -71,11 +71,11 @@ and meaning of the configuration parameters.</p>
 </div><h4 id='method.initialization_fail_fast' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.initialization_fail_fast' class='fnname'>initialization_fail_fast</a>(self, initialization_fail_fast: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; <a class='struct' href='../../r2d2/config/struct.Builder.html' title='r2d2::config::Builder'>Builder</a>&lt;C, E&gt;</code></h4>
 <div class='docblock'><p>Sets <code>initialization_fail_fast</code>.</p>
 </div><h4 id='method.connection_timeout_ms' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.connection_timeout_ms' class='fnname'>connection_timeout_ms</a>(self, connection_timeout_ms: <a href='http://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>) -&gt; <a class='struct' href='../../r2d2/config/struct.Builder.html' title='r2d2::config::Builder'>Builder</a>&lt;C, E&gt;</code></h4>
-<div class='docblock'><p>Sets <code>connection_timeout</code> to the specified number of milliseconds.</p>
+<div class='docblock'><p>Sets <code>connection_timeout_ms</code> to the specified number of milliseconds.</p>
 
 <h1 id="panics" class='section-header'><a
                            href="#panics">Panics</a></h1>
-<p>Panics if <code>connection_timeout</code> is nonpositive.</p>
+<p>Panics if <code>connection_timeout_ms</code> is 0.</p>
 </div><h4 id='method.error_handler' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.error_handler' class='fnname'>error_handler</a>(self, error_handler: <a class='struct' href='http://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;<a class='trait' href='../../r2d2/trait.HandleError.html' title='r2d2::HandleError'>HandleError</a>&lt;E&gt;&gt;) -&gt; <a class='struct' href='../../r2d2/config/struct.Builder.html' title='r2d2::config::Builder'>Builder</a>&lt;C, E&gt;</code></h4>
 <div class='docblock'><p>Sets the <code>error_handler</code>.</p>
 </div><h4 id='method.connection_customizer' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.connection_customizer' class='fnname'>connection_customizer</a>(self, connection_customizer: <a class='struct' href='http://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;<a class='trait' href='../../r2d2/trait.CustomizeConnection.html' title='r2d2::CustomizeConnection'>CustomizeConnection</a>&lt;C, E&gt;&gt;) -&gt; <a class='struct' href='../../r2d2/config/struct.Builder.html' title='r2d2::config::Builder'>Builder</a>&lt;C, E&gt;</code></h4>

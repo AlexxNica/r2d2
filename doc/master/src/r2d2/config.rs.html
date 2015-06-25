@@ -314,11 +314,11 @@
         <span class='self'>self</span>
     }
 
-    <span class='doccomment'>/// Sets `connection_timeout` to the specified number of milliseconds.</span>
+    <span class='doccomment'>/// Sets `connection_timeout_ms` to the specified number of milliseconds.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// # Panics</span>
     <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Panics if `connection_timeout` is nonpositive.</span>
+    <span class='doccomment'>/// Panics if `connection_timeout_ms` is 0.</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_timeout_ms</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>connection_timeout_ms</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>connection_timeout_ms</span> <span class='op'>&gt;</span> <span class='number'>0</span>, <span class='string'>&quot;connection_timeout_ms must be positive&quot;</span>);
