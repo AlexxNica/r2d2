@@ -528,9 +528,9 @@
 
 <span class='doccomment'>/// A `HandleError` implementation which does nothing.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>NoopErrorHandler</span>;
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>NopErrorHandler</span>;
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span> <span class='ident'>HandleError</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>NoopErrorHandler</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span> <span class='ident'>HandleError</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>NopErrorHandler</span> {
     <span class='kw'>fn</span> <span class='ident'>handle_error</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, _: <span class='ident'>E</span>) {}
 }
 
@@ -562,9 +562,9 @@
 
 <span class='doccomment'>/// A `CustomizeConnection` which does nothing.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>NoopConnectionCustomizer</span>;
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>NopConnectionCustomizer</span>;
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> <span class='ident'>CustomizeConnection</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>NoopConnectionCustomizer</span> {}
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> <span class='ident'>CustomizeConnection</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>NopConnectionCustomizer</span> {}
 
 <span class='kw'>struct</span> <span class='ident'>PoolInternals</span><span class='op'>&lt;</span><span class='ident'>C</span><span class='op'>&gt;</span> {
     <span class='ident'>conns</span>: <span class='ident'>VecDeque</span><span class='op'>&lt;</span><span class='ident'>C</span><span class='op'>&gt;</span>,

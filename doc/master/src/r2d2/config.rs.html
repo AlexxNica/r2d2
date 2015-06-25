@@ -236,7 +236,7 @@
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
 <span class='kw'>use</span> <span class='ident'>debug_builders</span>::<span class='ident'>DebugStruct</span>;
 
-<span class='kw'>use</span> {<span class='ident'>HandleError</span>, <span class='ident'>NoopErrorHandler</span>, <span class='ident'>CustomizeConnection</span>, <span class='ident'>NoopConnectionCustomizer</span>};
+<span class='kw'>use</span> {<span class='ident'>HandleError</span>, <span class='ident'>NopErrorHandler</span>, <span class='ident'>CustomizeConnection</span>, <span class='ident'>NopConnectionCustomizer</span>};
 
 <span class='doccomment'>/// A builder for `Config`.</span>
 <span class='doccomment'>///</span>
@@ -355,8 +355,8 @@
             <span class='ident'>test_on_check_out</span>: <span class='boolval'>true</span>,
             <span class='ident'>initialization_fail_fast</span>: <span class='boolval'>true</span>,
             <span class='ident'>connection_timeout_ms</span>: <span class='number'>30</span> <span class='op'>*</span> <span class='number'>1000</span>,
-            <span class='ident'>error_handler</span>: <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>NoopErrorHandler</span>),
-            <span class='ident'>connection_customizer</span>: <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>NoopConnectionCustomizer</span>),
+            <span class='ident'>error_handler</span>: <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>NopErrorHandler</span>),
+            <span class='ident'>connection_customizer</span>: <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>NopConnectionCustomizer</span>),
         }
     }
 }
@@ -411,14 +411,14 @@
 
     <span class='doccomment'>/// The handler for error reported in the pool.</span>
     <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Defaults to `r2d2::NoopErrorHandler`.</span>
+    <span class='doccomment'>/// Defaults to `r2d2::NopErrorHandler`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>error_handler</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>HandleError</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='kw-2'>&amp;</span><span class='op'>*</span><span class='self'>self</span>.<span class='ident'>error_handler</span>
     }
 
     <span class='doccomment'>/// The connection customizer used by the pool.</span>
     <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Defaults to `r2d2::NoopConnectionCustomizer`.</span>
+    <span class='doccomment'>/// Defaults to `r2d2::NopConnectionCustomizer`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_customizer</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>CustomizeConnection</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='kw-2'>&amp;</span><span class='op'>*</span><span class='self'>self</span>.<span class='ident'>connection_customizer</span>
     }
