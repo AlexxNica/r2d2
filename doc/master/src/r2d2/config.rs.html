@@ -231,24 +231,6 @@
 <span id="189">189</span>
 <span id="190">190</span>
 <span id="191">191</span>
-<span id="192">192</span>
-<span id="193">193</span>
-<span id="194">194</span>
-<span id="195">195</span>
-<span id="196">196</span>
-<span id="197">197</span>
-<span id="198">198</span>
-<span id="199">199</span>
-<span id="200">200</span>
-<span id="201">201</span>
-<span id="202">202</span>
-<span id="203">203</span>
-<span id="204">204</span>
-<span id="205">205</span>
-<span id="206">206</span>
-<span id="207">207</span>
-<span id="208">208</span>
-<span id="209">209</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Pool configuration.</span>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
@@ -269,7 +251,6 @@
     <span class='doccomment'>/// Constructs a new `Builder`.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Parameters are initialized with their default values.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='ident'>Builder</span> {
             <span class='ident'>c</span>: <span class='ident'>Config</span>::<span class='ident'>default</span>(),
@@ -281,7 +262,6 @@
     <span class='doccomment'>/// # Panics</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Panics if `pool_size` is 0.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>pool_size</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>pool_size</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>pool_size</span> <span class='op'>&gt;</span> <span class='number'>0</span>, <span class='string'>&quot;pool_size must be positive&quot;</span>);
         <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>pool_size</span> <span class='op'>=</span> <span class='ident'>pool_size</span>;
@@ -293,7 +273,6 @@
     <span class='doccomment'>/// # Panics</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Panics if `helper_threads` is 0.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>helper_threads</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>helper_threads</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>helper_threads</span> <span class='op'>&gt;</span> <span class='number'>0</span>, <span class='string'>&quot;helper_threads must be positive&quot;</span>);
         <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>helper_threads</span> <span class='op'>=</span> <span class='ident'>helper_threads</span>;
@@ -301,14 +280,12 @@
     }
 
     <span class='doccomment'>/// Sets `test_on_check_out`.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>test_on_check_out</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>test_on_check_out</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>test_on_check_out</span> <span class='op'>=</span> <span class='ident'>test_on_check_out</span>;
         <span class='self'>self</span>
     }
 
     <span class='doccomment'>/// Sets `initialization_fail_fast`.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>initialization_fail_fast</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>initialization_fail_fast</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>initialization_fail_fast</span> <span class='op'>=</span> <span class='ident'>initialization_fail_fast</span>;
         <span class='self'>self</span>
@@ -319,7 +296,6 @@
     <span class='doccomment'>/// # Panics</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Panics if `connection_timeout_ms` is 0.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_timeout_ms</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>connection_timeout_ms</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>connection_timeout_ms</span> <span class='op'>&gt;</span> <span class='number'>0</span>, <span class='string'>&quot;connection_timeout_ms must be positive&quot;</span>);
         <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>connection_timeout_ms</span> <span class='op'>=</span> <span class='ident'>connection_timeout_ms</span>;
@@ -327,14 +303,12 @@
     }
 
     <span class='doccomment'>/// Sets the `error_handler`.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>error_handler</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>error_handler</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>HandleError</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>error_handler</span> <span class='op'>=</span> <span class='ident'>error_handler</span>;
         <span class='self'>self</span>
     }
 
     <span class='doccomment'>/// Sets the `connection_customizer`.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_customizer</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>connection_customizer</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>CustomizeConnection</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;&gt;</span>)
                                  <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>c</span>.<span class='ident'>connection_customizer</span> <span class='op'>=</span> <span class='ident'>connection_customizer</span>;
@@ -342,7 +316,6 @@
     }
 
     <span class='doccomment'>/// Consumes the `Builder`, turning it into a `Config`.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>build</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Config</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>c</span>
     }
@@ -375,7 +348,6 @@
 }
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> <span class='ident'>Default</span> <span class='kw'>for</span> <span class='ident'>Config</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>default</span>() <span class='op'>-&gt;</span> <span class='ident'>Config</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='ident'>Config</span> {
             <span class='ident'>pool_size</span>: <span class='number'>10</span>,
@@ -394,7 +366,6 @@
     <span class='doccomment'>/// `Config`.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// All parameters are initialized to their default values.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>builder</span>() <span class='op'>-&gt;</span> <span class='ident'>Builder</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='ident'>Builder</span>::<span class='ident'>new</span>()
     }
@@ -402,7 +373,6 @@
     <span class='doccomment'>/// The number of connections managed by the pool.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Defaults to 10.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>pool_size</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
         <span class='self'>self</span>.<span class='ident'>pool_size</span>
     }
@@ -411,7 +381,6 @@
     <span class='doccomment'>/// operations such as connection creation and health checks.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Defaults to 3.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>helper_threads</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
         <span class='self'>self</span>.<span class='ident'>helper_threads</span>
     }
@@ -420,7 +389,6 @@
     <span class='doccomment'>/// `ConnectionManager::is_valid` before it is checked out of the pool.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Defaults to true.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>test_on_check_out</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='self'>self</span>.<span class='ident'>test_on_check_out</span>
     }
@@ -429,16 +397,14 @@
     <span class='doccomment'>/// returning an error if they could not be created.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Defaults to true.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>initialization_fail_fast</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='self'>self</span>.<span class='ident'>initialization_fail_fast</span>
     }
 
-    <span class='doccomment'>/// Calls to `Pool::get` will wait for this many milliseconds for a</span>
-    <span class='doccomment'>/// connection to become available before returning an error.</span>
+    <span class='doccomment'>/// Calls to `Pool::get` will wait this many milliseconds for a connection</span>
+    <span class='doccomment'>/// to become available before returning an error.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Defaults to 30 seconds.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_timeout_ms</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
         <span class='self'>self</span>.<span class='ident'>connection_timeout_ms</span>
     }
@@ -446,7 +412,6 @@
     <span class='doccomment'>/// The handler for error reported in the pool.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Defaults to `r2d2::NoopErrorHandler`.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>error_handler</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>HandleError</span><span class='op'>&lt;</span><span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='kw-2'>&amp;</span><span class='op'>*</span><span class='self'>self</span>.<span class='ident'>error_handler</span>
     }
@@ -454,7 +419,6 @@
     <span class='doccomment'>/// The connection customizer used by the pool.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Defaults to `r2d2::NoopConnectionCustomizer`.</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connection_customizer</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>CustomizeConnection</span><span class='op'>&lt;</span><span class='ident'>C</span>, <span class='ident'>E</span><span class='op'>&gt;</span> {
         <span class='kw-2'>&amp;</span><span class='op'>*</span><span class='self'>self</span>.<span class='ident'>connection_customizer</span>
     }
