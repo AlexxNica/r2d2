@@ -2,8 +2,7 @@ use std::collections::BinaryHeap;
 use std::cmp::{PartialOrd, Ord, PartialEq, Eq, Ordering};
 use std::sync::{Arc, Mutex, Condvar};
 use std::thread;
-use time::Duration;
-use time;
+use std::time::{Duration, Instant};
 
 use thunk::Thunk;
 
@@ -17,7 +16,7 @@ enum JobType {
 
 struct Job {
     type_: JobType,
-    time: u64,
+    time: Instant,
 }
 
 impl PartialOrd for Job {
@@ -107,13 +106,13 @@ impl ScheduledThreadPool {
 
     #[allow(dead_code)]
     pub fn run<F>(&self, job: F) where F: FnOnce() + Send + 'static {
-        self.run_after(Duration::zero(), job)
+        self.run_after(Duration::from_secs(0), job)
     }
 
     pub fn run_after<F>(&self, dur: Duration, job: F) where F: FnOnce() + Send + 'static {
         let job = Job {
             type_: JobType::Once(Thunk::new(job)),
-            time: (time::precise_time_ns() as i64 + dur.num_nanoseconds().unwrap()) as u64,
+            time: Instant::now() + dur,
         };
         self.shared.run(job)
     }
@@ -121,7 +120,7 @@ impl ScheduledThreadPool {
     pub fn run_at_fixed_rate<F>(&self, rate: Duration, f: F) where F: FnMut() + Send + 'static {
         let job = Job {
             type_: JobType::FixedRate { f: Box::new(f), rate: rate },
-            time: (time::precise_time_ns() as i64 + rate.num_nanoseconds().unwrap()) as u64,
+            time: Instant::now() + rate,
         };
         self.shared.run(job)
     }
@@ -174,24 +173,18 @@ impl Worker {
 
         let mut inner = self.shared.inner.lock().unwrap();
         loop {
-            let now = time::precise_time_ns();
+            let now = Instant::now();
 
             let need = match inner.queue.peek() {
                 None if inner.shutdown => return None,
                 None => Need::Wait,
                 Some(e) if e.time <= now => break,
-                Some(e) => Need::WaitTimeout(Duration::nanoseconds(e.time as i64 - now as i64)),
+                Some(e) => Need::WaitTimeout(e.time.duration_from_earlier(now)),
             };
 
             inner = match need {
                 Need::Wait => self.shared.cvar.wait(inner).unwrap(),
-                Need::WaitTimeout(t) => {
-                    let mut timeout = t.num_milliseconds();
-                    if timeout < 0 {
-                        timeout = 0;
-                    }
-                    self.shared.cvar.wait_timeout_ms(inner, timeout as u32).unwrap().0
-                },
+                Need::WaitTimeout(t) => self.shared.cvar.wait_timeout(inner, t).unwrap().0,
             };
         }
 
@@ -205,7 +198,7 @@ impl Worker {
                 f();
                 let new_job = Job {
                     type_: JobType::FixedRate { f: f, rate: rate },
-                    time: (job.time as i64 + rate.num_nanoseconds().unwrap()) as u64,
+                    time: job.time + rate,
                 };
                 self.shared.run(new_job)
             }
@@ -217,7 +210,7 @@ impl Worker {
 mod test {
     use std::sync::mpsc::channel;
     use std::sync::{Arc, Barrier};
-    use time::Duration;
+    use std::time::Duration;
 
     use super::ScheduledThreadPool;
 
@@ -279,8 +272,8 @@ mod test {
         let (tx, rx) = channel();
 
         let tx1 = tx.clone();
-        pool.run_after(Duration::seconds(1), move || tx1.send(1usize).unwrap());
-        pool.run_after(Duration::milliseconds(500), move || tx.send(2usize).unwrap());
+        pool.run_after(Duration::from_secs(1), move || tx1.send(1usize).unwrap());
+        pool.run_after(Duration::from_millis(500), move || tx.send(2usize).unwrap());
 
         assert_eq!(2, rx.recv().unwrap());
         assert_eq!(1, rx.recv().unwrap());
@@ -292,8 +285,8 @@ mod test {
         let (tx, rx) = channel();
 
         let tx1 = tx.clone();
-        pool.run_after(Duration::seconds(1), move || tx1.send(1usize).unwrap());
-        pool.run_after(Duration::milliseconds(500), move || tx.send(2usize).unwrap());
+        pool.run_after(Duration::from_secs(1), move || tx1.send(1usize).unwrap());
+        pool.run_after(Duration::from_millis(500), move || tx.send(2usize).unwrap());
 
         drop(pool);
 
@@ -309,7 +302,7 @@ mod test {
 
         let mut pool2 = Some(pool.clone());
         let mut i = 0i32;
-        pool.run_at_fixed_rate(Duration::milliseconds(500), move || {
+        pool.run_at_fixed_rate(Duration::from_millis(500), move || {
             i += 1;
             tx.send(i).unwrap();
             rx2.recv().unwrap();

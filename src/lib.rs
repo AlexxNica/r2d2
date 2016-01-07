@@ -40,10 +40,10 @@
 //! ```
 #![warn(missing_docs)]
 #![doc(html_root_url="https://sfackler.github.io/r2d2/doc/v0.6.1")]
+#![feature(time2)]
 
 #[macro_use]
 extern crate log;
-extern crate time;
 
 use std::cmp;
 use std::collections::VecDeque;
@@ -52,7 +52,7 @@ use std::fmt;
 use std::ops::{Deref, DerefMut};
 use std::mem;
 use std::sync::{Arc, Mutex, Condvar};
-use time::{Duration, SteadyTime};
+use std::time::{Duration, Instant};
 
 #[doc(inline)]
 pub use config::Config;
@@ -143,16 +143,17 @@ impl<C, E> CustomizeConnection<C, E> for NopConnectionCustomizer {}
 
 struct Conn<C> {
     conn: C,
-    birth: SteadyTime,
-    idle_start: SteadyTime,
+    birth: Instant,
+    idle_start: Instant,
 }
 
 impl<C> Conn<C> {
     fn new(conn: C) -> Conn<C> {
+        let now = Instant::now();
         Conn {
             conn: conn,
-            birth: SteadyTime::now(),
-            idle_start: SteadyTime::now(),
+            birth: now,
+            idle_start: now,
         }
     }
 }
@@ -194,7 +195,7 @@ fn add_connection<M>(shared: &Arc<SharedPool<M>>,
     where M: ManageConnection
 {
     internals.pending_conns += 1;
-    inner(Duration::zero(), shared);
+    inner(Duration::from_secs(0), shared);
 
     fn inner<M>(delay: Duration, shared: &Arc<SharedPool<M>>) where M: ManageConnection {
         let new_shared = shared.clone();
@@ -213,8 +214,8 @@ fn add_connection<M>(shared: &Arc<SharedPool<M>>,
                 }
                 Err(err) => {
                     shared.config.error_handler().handle_error(err);
-                    let delay = cmp::max(Duration::milliseconds(200), delay);
-                    let delay = cmp::min(cvt(shared.config.connection_timeout()) / 2, delay * 2);
+                    let delay = cmp::max(Duration::from_millis(200), delay);
+                    let delay = cmp::min(shared.config.connection_timeout() / 2, delay * 2);
                     inner(delay, &shared);
                 },
             }
@@ -228,14 +229,14 @@ fn reap_connections<M>(shared: &Arc<SharedPool<M>>) where M: ManageConnection {
 
     let mut internals = shared.internals.lock().unwrap();
     mem::swap(&mut old, &mut internals.conns);
-    let now = SteadyTime::now();
+    let now = Instant::now();
     for conn in old {
         let mut reap = false;
         if let Some(timeout) = shared.config.idle_timeout() {
-            reap |= now - conn.idle_start >= cvt(timeout);
+            reap |= conn.idle_start + timeout <= now;
         }
         if let Some(lifetime) = shared.config.max_lifetime() {
-            reap |= now - conn.birth >= cvt(lifetime);
+            reap |= conn.birth + lifetime <= now;
         }
         if reap {
             drop_conn(shared, &mut internals);
@@ -317,7 +318,7 @@ impl<M> Pool<M> where M: ManageConnection {
     // for testing
     fn new_inner(config: Config<M::Connection, M::Error>,
                  manager: M,
-                 reaper_rate: i64)
+                 reaper_rate: u64)
                  -> Result<Pool<M>, InitializationError> {
         let internals = PoolInternals {
             conns: VecDeque::with_capacity(config.pool_size() as usize),
@@ -342,23 +343,22 @@ impl<M> Pool<M> where M: ManageConnection {
         }
 
         if shared.config.initialization_fail_fast() {
-            let end = SteadyTime::now() + cvt(shared.config.connection_timeout());
+            let end = Instant::now() + shared.config.connection_timeout();
             let mut internals = shared.internals.lock().unwrap();
 
             while internals.num_conns != shared.config.pool_size() {
-                let wait = end - SteadyTime::now();
-                if wait <= Duration::zero() {
+                let now = Instant::now();
+                if now >= end {
                     return Err(InitializationError(()));
                 }
-                internals = shared.cond.wait_timeout_ms(internals,
-                                                        wait.num_milliseconds() as u32)
-                    .unwrap().0;
+                let wait = end.duration_from_earlier(now);
+                internals = shared.cond.wait_timeout(internals, wait).unwrap().0;
             }
         }
 
         if shared.config.max_lifetime().is_some() || shared.config.idle_timeout().is_some() {
             let s = shared.clone();
-            shared.thread_pool.run_at_fixed_rate(Duration::seconds(reaper_rate),
+            shared.thread_pool.run_at_fixed_rate(Duration::from_secs(reaper_rate),
                                                  move || reap_connections(&s));
         }
 
@@ -368,7 +368,7 @@ impl<M> Pool<M> where M: ManageConnection {
     }
 
     fn get_inner(&self) -> Result<Conn<M::Connection>, GetTimeout> {
-        let end = SteadyTime::now() + cvt(self.shared.config.connection_timeout());
+        let end = Instant::now() + self.shared.config.connection_timeout();
         let mut internals = self.shared.internals.lock().unwrap();
 
         loop {
@@ -392,16 +392,17 @@ impl<M> Pool<M> where M: ManageConnection {
                         add_connection(&self.shared, &mut internals);
                     }
 
-                    let now = SteadyTime::now();
-                    let mut timeout = (end - now).num_milliseconds();
-                    if timeout < 0 {
-                        timeout = 0
+                    let now = Instant::now();
+                    let timeout = if now > end {
+                        Duration::from_secs(0)
+                    } else {
+                        end.duration_from_earlier(now)
                     };
-                    let (new_internals, no_timeout) =
-                        self.shared.cond.wait_timeout_ms(internals, timeout as u32).unwrap();
+                    let (new_internals, result) =
+                        self.shared.cond.wait_timeout(internals, timeout).unwrap();
                     internals = new_internals;
 
-                    if !no_timeout {
+                    if result.timed_out() {
                         return Err(GetTimeout(()));
                     }
                 }
@@ -428,7 +429,7 @@ impl<M> Pool<M> where M: ManageConnection {
         if broken {
             drop_conn(&self.shared, &mut internals);
         } else {
-            conn.idle_start = SteadyTime::now();
+            conn.idle_start = Instant::now();
             internals.conns.push_back(conn);
             self.shared.cond.notify_one();
         }
@@ -469,8 +470,4 @@ impl<M> DerefMut for PooledConnection<M> where M: ManageConnection {
     fn deref_mut(&mut self) -> &mut M::Connection {
         &mut self.conn.as_mut().unwrap().conn
     }
-}
-
-fn cvt(d: std::time::Duration) -> Duration {
-    Duration::seconds(d.as_secs() as i64) + Duration::nanoseconds(d.subsec_nanos() as i64)
 }
