@@ -354,7 +354,7 @@ impl<M> Pool<M> where M: ManageConnection
     ///
     /// Waits for at most `Config::connection_timeout` before returning an
     /// error.
-    pub fn get(&self) -> Result<PooledConnection<M>, GetTimeout> {
+    pub fn get(&self) -> Result<PooledConnection<M::Connection>, GetTimeout> {
         let end = SteadyTime::now() + cvt(self.0.config.connection_timeout());
         let mut internals = self.0.internals.lock().unwrap();
 
@@ -396,8 +396,9 @@ impl<M> Pool<M> where M: ManageConnection
             }
         }
 
+        let pool = self.clone();
         Ok(PooledConnection {
-            pool: self.clone(),
+            put_back: Box::new(move |conn| pool.put_back(conn)),
             conn: Some(connection),
         })
     }
@@ -458,41 +459,34 @@ impl Error for GetTimeout {
 }
 
 /// A smart pointer wrapping a connection.
-pub struct PooledConnection<M>
-    where M: ManageConnection
+pub struct PooledConnection<C>
 {
-    pool: Pool<M>,
-    conn: Option<Conn<M::Connection>>,
+    put_back: Box<Fn(Conn<C>)>,
+    conn: Option<Conn<C>>,
 }
 
-impl<M> fmt::Debug for PooledConnection<M>
-    where M: ManageConnection,
-          M::Connection: fmt::Debug
-{
+impl<C: fmt::Debug> fmt::Debug for PooledConnection<C> {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt::Debug::fmt(&self.conn.as_ref().unwrap().conn, fmt)
     }
 }
 
-impl<M> Drop for PooledConnection<M> where M: ManageConnection
-{
+impl<C> Drop for PooledConnection<C> {
     fn drop(&mut self) {
-        self.pool.put_back(self.conn.take().unwrap());
+        (self.put_back)(self.conn.take().unwrap());
     }
 }
 
-impl<M> Deref for PooledConnection<M> where M: ManageConnection
-{
-    type Target = M::Connection;
+impl<C> Deref for PooledConnection<C> {
+    type Target = C;
 
-    fn deref(&self) -> &M::Connection {
+    fn deref(&self) -> &C {
         &self.conn.as_ref().unwrap().conn
     }
 }
 
-impl<M> DerefMut for PooledConnection<M> where M: ManageConnection
-{
-    fn deref_mut(&mut self) -> &mut M::Connection {
+impl<C> DerefMut for PooledConnection<C> {
+    fn deref_mut(&mut self) -> &mut C {
         &mut self.conn.as_mut().unwrap().conn
     }
 }
